@@ -1,4 +1,4 @@
-## Mephi Labs
+### Mephi Labs
 
 
 # First Lab
