@@ -56,34 +56,54 @@ Graph::Graph() {
 }
 
 Graph::Graph(int v, int r) {
+
+    int maxRebra = (v * (v - 1)) / 2;
+    if (r > maxRebra)
+        r = maxRebra;
+
     this->countTops = v;
-    data = new int*[v];
+    data = new int* [v];
     for (int i = 0; i < v; i++)
         data[i] = new int[v];
 
-    for(int i = 0; i < v; i++)
-        for(int j = 0; j < v; j++)
+    for (int i = 0; i < v; i++)
+        for (int j = 0; j < v; j++)
             data[i][j] = 0;
 
     adjList.resize(v);
-    for(int i = 0; i < r; i++) {
-        int start = rand() % v, end = rand() % v;
-        if(end == start && end == 0)
-            end++;
-        if(end == start && end > 0)
-            end--;
+
+    vector<string> tmpVec;
+
+    for (int i = 0; i < r; i++) {
+        int start, end;
+        string tmpPair;
+
+        do {
+            start = rand() % v, end = rand() % v;
+            if (end == start && end == 0)
+                end++;
+            if (end == start && end > 0)
+                end--;
+
+            tmpPair = to_string(start) + " " + to_string(end);
+
+        } while (find(tmpVec.begin(), tmpVec.end(), tmpPair) != tmpVec.end());
+
+        string s1 = to_string(start) + " " + to_string(end), s2 = to_string(end) + " " + to_string(start);
+        tmpVec.push_back(s1);
+        tmpVec.push_back(s2);
+
         int weight = (rand() % 10 + 1) * 5;
         data[start][end] = weight;
         data[end][start] = weight;
-        vector<tuple<int,int,int>> vector;
-        vector.push_back(make_tuple(start,end,weight));
+        vector<tuple<int, int, int>> vector;
+        vector.push_back(make_tuple(start, end, weight));
 
-        edges.push_back(make_tuple(start,end,weight));
+        edges.push_back(make_tuple(start, end, weight));
 
         adjList[start].push_back(end);
         adjList[end].push_back(start);
     }
-
 }
 
 Graph::Graph(vector<tuple<int,int,int>> vector) {
